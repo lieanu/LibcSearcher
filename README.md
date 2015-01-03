@@ -11,6 +11,10 @@ Search libc function offset
 2. 使用
 =======
 
+`git clone https://github.com/lieanu/libc.git`
+
+submodule `libc_binary`不是必须的。
+
 ```python
 from libc import *
 obj = libc("fgets", "7ff39014bd90") #第二个参数，为已泄露的实际地址，字符串或int均可
