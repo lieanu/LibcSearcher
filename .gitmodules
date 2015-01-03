@@ -1,0 +1,3 @@
+[submodule "libc_binary"]
+	path = libc_binary
+	url = git@github.com:lieanu/libc_binary.git
