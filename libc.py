@@ -2,6 +2,11 @@
 
 import os
 import struct
+import logging
+import logging.handlers
+
+logging.basicConfig(format='%(asctime)s - %(filename)s:%(lineno)s - %(message)s',
+                    level=logging.DEBUG)
 
 class libc(object):
     def __init__(self, func, funcaddr):
@@ -45,6 +50,10 @@ class libc(object):
 
         if len(result) == 1:
             return result[0]
+        elif len(result) == 0:
+            logging.warning("No match! try other libc.")
+            self.listall()
+            return (0, (0,0))
         else:
             print "[x]  Multi Results, Choose it manually, First Default:  " 
             i = 0
@@ -62,35 +71,45 @@ class libc(object):
                     if id < len(result):
                         break
                     else:
-                        print "Invalid ID"
+                        logging.warning("Invalid ID")
                 except ValueError:
                     break
             return result[id]
 
     def base(self):
         (key, pair) = self.__search()
+        if key == 0:
+            return 0
         return self.funcaddr - pair[0]
 
     def system_offset(self):
         (key, pair) = self.__search()
+        if key == 0:
+            return 0
         for one in self.all[key]:
             if one[1] == "system":
                 return one[0]
 
     def system_address(self):
         (key, pair) = self.__search()
+        if key == 0:
+            return 0
         for one in self.all[key]:
             if one[1] == "system":
                 return self.funcaddr - pair[0] + one[0]
 
     def offset_by_name(self, func):
         (key, pair) = self.__search()
+        if key == 0:
+            return 0
         for one in self.all[key]:
             if one[1] == func:
                 return one[0]
 
     def address_by_name(self, func):
         (key, pair) = self.__search()
+        if key == 0:
+            return 0
         for one in self.all[key]:
             if one[1] == func:
                 return self.funcaddr - pair[0] + one[0]
@@ -98,4 +117,17 @@ class libc(object):
 
     def info(self):
         (key, pair) = self.__search()
-        print "Libc Version: ", key
+        return key
+
+    def listall(self):
+        print "All available libc database : "
+        i = 0
+        for k, v in self.all.items():
+            i += 1
+            print str(i) + ":\t" + k
+
+if __name__ == "__main__" :
+    obj = libc("fgets", "7ff39014bd90")
+    print "[+]system address: ", hex(obj.system_address())
+    print "[+]libc info     : ", obj.info()
+    obj.listall()
