@@ -36,7 +36,7 @@ class libc(object):
         """
         if len(self.condition) == 0:
             logging.warning("No leaked info provided.\nPlease supply more info using \n\tadd_condition(leaked_func, leaked_address).")
-            sys.exit(1)
+            sys.exit(0)
 
         res = []
         for name, address in self.condition.items():
@@ -60,7 +60,7 @@ class libc(object):
 
         if len(result) == 0:
             logging.warning("No matched libc, try others.")
-            sys.exit(1)
+            sys.exit(0)
 
         if len(result) > 1:
             print "Multi Results:"
