@@ -13,11 +13,15 @@ Search libc function offset
 2. 使用
 =======
 
+安装：
+
 ```shell
 git clone https://github.com/lieanu/libc.git
 git submodule update --init --recursive
-python setup develop```
+python setup develop
+```
 
+代码示例：
 
 ```python
 from libc import *
@@ -25,7 +29,11 @@ obj = libc("fgets", "7ff39014bd90") #第二个参数，为已泄露的实际地�
 
 obj.dump("system")        #system 偏移
 obj.dump("str_bin_sh")    #/bin/sh 偏移
+obj.dump("__libc_start_main_ret")    
 ```
+
+如果遇到返回多个libc版本库的情况，可以通过`add_condition(leaked_func, leaked_address)`来添加限制条件，
+也可以手工选择其中一个libc版本（如果你确定的话）。
 
 3.其它
 ======
