@@ -13,7 +13,10 @@ Search libc function offset
 2. 使用
 =======
 
-`git clone https://github.com/lieanu/libc.git`
+```shell
+git clone https://github.com/lieanu/libc.git
+git submodule update --init --recursive
+python setup develop```
 
 
 ```python
