@@ -1,3 +1,6 @@
 [submodule "libc_binary"]
 	path = libc_binary
 	url = git@github.com:lieanu/libc_binary.git
+[submodule "libc-database"]
+	path = libc-database
+	url = https://github.com/niklasb/libc-database.git
