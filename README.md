@@ -25,7 +25,9 @@ python setup develop
 
 ```python
 from libc import *
-obj = libc("fgets", "7ff39014bd90") #第二个参数，为已泄露的实际地址，字符串或int均可
+
+#第二个参数，为已泄露的实际地址,或最后12位(比如：d90)，字符串或int均可
+obj = libc("fgets", "7ff39014bd90") 
 
 obj.dump("system")        #system 偏移
 obj.dump("str_bin_sh")    #/bin/sh 偏移
