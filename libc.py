@@ -2,6 +2,7 @@
 
 import os
 import re
+import sys
 import struct
 import logging
 import logging.handlers
@@ -10,7 +11,7 @@ import subprocess
 logging.basicConfig(format='%(asctime)s - %(filename)s:%(lineno)s - %(message)s',
                     level=logging.DEBUG)
 
-class LIBC(object):
+class libc(object):
     def __init__(self, func=None, address=None):
         if isinstance(address, basestring):
             if address.startswith("0x"):
@@ -35,7 +36,7 @@ class LIBC(object):
         """
         if len(self.condition) == 0:
             logging.warning("No leaked info provided.\nPlease supply more info using \n\tadd_condition(leaked_func, leaked_address).")
-            exit(0)
+            sys.exit(1)
 
         res = []
         for name, address in self.condition.items():
@@ -59,7 +60,7 @@ class LIBC(object):
 
         if len(result) == 0:
             logging.warning("No matched libc, try others.")
-            exit(0)
+            sys.exit(1)
 
         if len(result) > 1:
             print "Multi Results:"
@@ -69,7 +70,7 @@ class LIBC(object):
             while True:
                 in_id = input("You can choose it by hand\nOr type 'exit' to quit:")
                 if in_id == "exit" or in_id == "quit":
-                    exit(0)
+                    sys.exit(0)
                 try:
                     in_id = int(in_id)
                     return result[in_id]
