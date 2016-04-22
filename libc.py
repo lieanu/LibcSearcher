@@ -22,7 +22,7 @@ class libc(object):
         if func:
             self.condition[func] = address
 
-        self.libc_database_path = os.path.join(os.path.abspath(os.path.dirname("__file__")), "libc-database/db/")
+        self.libc_database_path = os.path.join(os.path.realpath(os.path.dirname(__file__)), "libc-database/db/")
 
     def add_condition(self, func, address):
         if isinstance(address, basestring):
