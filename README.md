@@ -17,6 +17,7 @@ Search libc function offset
 
 ```shell
 git clone https://github.com/lieanu/libc.git
+cd libc
 git submodule update --init --recursive
 python setup develop
 ```
