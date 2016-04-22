@@ -1,3 +1,3 @@
 [submodule "libc-database"]
-	path = libc-database
-	url = https://github.com/niklasb/libc-database.git
+    path = libc-database
+    url = https://github.com/lieanu/libc-database.git
