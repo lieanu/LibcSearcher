@@ -8,7 +8,7 @@ import logging
 import logging.handlers
 import subprocess
 
-logging.basicConfig(format='%(asctime)s - %(filename)s:%(lineno)s - %(message)s',
+logging.basicConfig(format='%(asctime)s : %(message)s',
                     level=logging.DEBUG)
 
 class libc(object):
@@ -23,6 +23,7 @@ class libc(object):
             self.condition[func] = address
 
         self.libc_database_path = os.path.join(os.path.realpath(os.path.dirname(__file__)), "libc-database/db/")
+        self.db = ""
 
     def add_condition(self, func, address):
         if isinstance(address, basestring):
@@ -73,10 +74,12 @@ class libc(object):
                     sys.exit(0)
                 try:
                     in_id = int(in_id)
-                    return result[in_id]
+                    self.db = result[in_id]
+                    break
                 except:
                     continue
-        return result[0]
+        self.db = result[0]
+        logging.info("[+] %s be choosed." % self.pmore(self.db))
 
     def pmore(self, result):
         result = result[:-8] # .strip(".symbols")
@@ -85,9 +88,11 @@ class libc(object):
         return "%s (id %s)" % (info, result)
 
     def dump(self, func=None):
-
-        db = self.decided()
-        db = self.libc_database_path + db
+        """Wrapper for libc-database's dump shell script.
+        """
+        if not self.db:
+            self.decided()
+        db = self.libc_database_path + self.db
         fd = open(db, "r")
         data = fd.read().strip("\n").split("\n")
         if not func:
