@@ -20,10 +20,10 @@ python setup develop
 ## 示例
 
 ```python
-from libc import *
+from LibcSearcher import *
 
 #第二个参数，为已泄露的实际地址,或最后12位(比如：d90)，int类型
-obj = libc("fgets", 0X7ff39014bd90) 
+obj = LibcSearcher("fgets", 0X7ff39014bd90)
 
 obj.dump("system")        #system 偏移
 obj.dump("str_bin_sh")    #/bin/sh 偏移
