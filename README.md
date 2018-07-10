@@ -14,7 +14,7 @@
 git clone https://github.com/lieanu/libc.git
 cd libc
 git submodule update --init --recursive
-python setup develop
+python setup.py develop
 ```
 
 ## 示例
