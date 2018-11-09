@@ -1,6 +1,4 @@
 *.egg-info
 *.pyc
-*.so.6
-*.so
 *.deb
 *.swp
