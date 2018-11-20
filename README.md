@@ -11,9 +11,7 @@
 ## 安装
 
 ```shell
-git clone https://github.com/lieanu/libc.git
-cd libc
-git submodule update --init --recursive
+git clone https://github.com/lieanu/LibcSearcher.git
 python setup.py develop
 ```
 
