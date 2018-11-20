@@ -12,6 +12,7 @@
 
 ```shell
 git clone https://github.com/lieanu/LibcSearcher.git
+cd LibcSearcher
 python setup.py develop
 ```
 
