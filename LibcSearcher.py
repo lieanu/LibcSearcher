@@ -38,9 +38,11 @@ class LibcSearcher(object):
 
         db = self.libc_database_path
         files = []
+        # only read "*.symbols" file to find
         for _, _, f in os.walk(db):
-            files += f
-
+            for i in f:
+                files += re.findall('^.*symbols$', i)
+        
         result = []
         for ff in files:
             fd = open(db + ff, "rb")
