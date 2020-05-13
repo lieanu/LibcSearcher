@@ -23,6 +23,7 @@ class LibcSearcher(object):
             print("The address should be an int number")
             sys.exit()
         self.condition[func] = address
+        return self
 
     #Wrapper for libc-database's find shell script.
     def decided(self):
@@ -43,14 +44,19 @@ class LibcSearcher(object):
             for i in f:
                 files += re.findall('^.*symbols$', i)
         
-        result = []
+        result = {}
         for ff in files:
             fd = open(db + ff, "rb")
             data = fd.read().decode(errors='ignore').split("\n")
             for x in res:
                 if any(map(lambda line: x.match(line), data)):
-                    result.append(ff)
+                    try:
+                        result[ff] += 1
+                    except KeyError:
+                        result[ff] = 1
             fd.close()
+
+        result = sorted(result.items(), key=lambda x: x[1], reverse=True)
 
         if len(result) == 0:
             print("No matched libc, please add more libc or try others")
@@ -59,7 +65,7 @@ class LibcSearcher(object):
         if len(result) > 1:
             print("Multi Results:")
             for x in range(len(result)):
-                print("%2d: %s" % (x, self.pmore(result[x])))
+                print("%2d:[hit %2d times] %s" % (x, result[x][1], self.pmore(result[x][0])))
             print("Please supply more info using \n\tadd_condition(leaked_func, leaked_address).")
             while True:
                 in_id = input(
@@ -68,12 +74,12 @@ class LibcSearcher(object):
                     sys.exit(0)
                 try:
                     in_id = int(in_id)
-                    self.db = result[in_id]
+                    self.db = result[in_id][0]
                     break
                 except:
                     continue
         else:
-            self.db = result[0]
+            self.db = result[0][0]
         print("[+] %s be choosed." % self.pmore(self.db))
 
     def pmore(self, result):
@@ -84,7 +90,6 @@ class LibcSearcher(object):
 
     #Wrapper for libc-database's dump shell script.
     def dump(self, func=None):
-
         if not self.db:
             self.decided()
         db = self.libc_database_path + self.db
@@ -120,3 +125,4 @@ if __name__ == "__main__":
     obj = LibcSearcher("fgets", 0x7ff39014bd90)
     print("[+]system  offset: ", hex(obj.dump("system")))
     print("[+]/bin/sh offset: ", hex(obj.dump("str_bin_sh")))
+
