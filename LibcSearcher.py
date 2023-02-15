@@ -34,7 +34,8 @@ class LibcSearcher(object):
         res = []
         for name, address in self.condition.items():
             addr_last12 = address & 0xfff
-            res.append(re.compile("^%s .*%x" % (name, addr_last12)))
+            # res.append(re.compile("^%s .*%x" % (name, addr_last12))) #后3位以0开头将丢失第一位，匹配精度下降，将出现大量结果；还可能匹配上地址中间部分，所以改为加%03x$
+            res.append(re.compile("^%s .*%03x$" % (name, addr_last12)))
 
         db = self.libc_database_path
         files = []
