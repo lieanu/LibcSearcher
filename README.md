@@ -1,5 +1,5 @@
 # Search libc function offset
-
+[原仓库](https://github.com/lieanu/LibcSearcher),修改部分bug
 ## 简介
 
 这是针对CTF比赛所做的小工具，在泄露了Libc中的某一个函数地址后，常常为不知道对方所使用的操作系统及libc的版本而苦恼，常规方法就是挨个把常见的Libc.so从系统里拿出来，与泄露的地址对比一下最后12位。

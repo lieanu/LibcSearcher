@@ -1,35 +1,154 @@
 #!/bin/bash
+cd "$(dirname "$0")"
 . common/libc.sh
 
-get_current_ubuntu trusty i386 libc6
-get_current_ubuntu trusty amd64 libc6
-get_current_ubuntu trusty amd64 libc6-i386
-#get_current_ubuntu utopic i386 libc6
-#get_current_ubuntu utopic amd64 libc6
-#get_current_ubuntu utopic amd64 libc6-i386
-#get_current_ubuntu vivid i386 libc6
-#get_current_ubuntu vivid amd64 libc6
-#get_current_ubuntu vivid amd64 libc6-i386
-#get_current_ubuntu wily i386 libc6
-#get_current_ubuntu wily amd64 libc6
-#get_current_ubuntu wily amd64 libc6-i386
-get_current_ubuntu xenial i386 libc6
-get_current_ubuntu xenial amd64 libc6
-get_current_ubuntu xenial amd64 libc6-i386
-#get_current_ubuntu yakkety i386 libc6
-#get_current_ubuntu yakkety amd64 libc6
-#get_current_ubuntu yakkety amd64 libc6-i386
-#get_current_ubuntu zesty i386 libc6
-#get_current_ubuntu zesty amd64 libc6
-#get_current_ubuntu zesty amd64 libc6-i386
-get_current_ubuntu artful i386 libc6
-get_current_ubuntu artful amd64 libc6
-get_current_ubuntu artful amd64 libc6-i386
-get_current_ubuntu bionic i386 libc6
-get_current_ubuntu bionic amd64 libc6
-get_current_ubuntu bionic amd64 libc6-i386
+cntr_category=1
+declare -a categories
+declare -A requirements
 
-get_all_ubuntu archive-eglibc http://security.ubuntu.com/ubuntu/pool/main/e/eglibc/
-get_all_ubuntu archive-glibc http://security.ubuntu.com/ubuntu/pool/main/g/glibc/
-get_all_ubuntu archive-old-eglibc http://old-releases.ubuntu.com/ubuntu/pool/main/e/eglibc/
-get_all_ubuntu archive-old-glibc http://old-releases.ubuntu.com/ubuntu/pool/main/g/glibc/
+categories[cntr_category]="ubuntu"
+requirements["ubuntu"]="requirements_debian"
+cntr_category=$((cntr_category + 1))
+ubuntu() {
+  get_all_debian ubuntu-eglibc http://archive.ubuntu.com/ubuntu/pool/main/e/eglibc/ libc6
+  get_all_debian ubuntu-glibc http://archive.ubuntu.com/ubuntu/pool/main/g/glibc/ libc6
+  get_all_debian ubuntu-musl http://archive.ubuntu.com/ubuntu/pool/universe/m/musl/ musl
+  get_all_debian ubuntu-dietlibc http://archive.ubuntu.com/ubuntu/pool/universe/d/dietlibc/ dietlibc
+  get_all_debian ubuntu-security-eglibc http://security.ubuntu.com/ubuntu/pool/main/e/eglibc/ libc6
+  get_all_debian ubuntu-security-glibc http://security.ubuntu.com/ubuntu/pool/main/g/glibc/ libc6
+  get_all_debian ubuntu-security-musl http://security.ubuntu.com/ubuntu/pool/universe/m/musl/ musl
+  get_all_debian ubuntu-security-dietlibc http://security.ubuntu.com/ubuntu/pool/universe/d/dietlibc/ dietlibc
+  get_all_debian ubuntu-old-eglibc http://old-releases.ubuntu.com/ubuntu/pool/main/e/eglibc/ libc6
+  get_all_debian ubuntu-old-glibc http://old-releases.ubuntu.com/ubuntu/pool/main/g/glibc/ libc6
+  get_all_debian ubuntu-old-musl http://old-releases.ubuntu.com/ubuntu/pool/universe/m/musl/ musl
+  get_all_debian ubuntu-old-dietlibc http://old-releases.ubuntu.com/ubuntu/pool/universe/d/dietlibc/ dietlibc
+}
+
+categories[cntr_category]="debian"
+requirements["debian"]="requirements_debian"
+cntr_category=$((cntr_category + 1))
+debian() {
+  get_all_debian debian-glibc https://deb.debian.org/debian/pool/main/g/glibc/ libc6
+  get_all_debian debian-musl https://deb.debian.org/debian/pool/main/m/musl/ musl
+  get_all_debian debian-dietlibc https://deb.debian.org/debian/pool/main/d/dietlibc/ dietlibc
+}
+
+categories[cntr_category]="rpm"
+requirements["rpm"]="requirements_rpm"
+cntr_category=$((cntr_category + 1))
+rpm() {
+  get_all_rpm rpm glibc libc x86_64
+  get_all_rpm rpm glibc libc i586
+  get_all_rpm rpm glibc libc i686
+  get_all_rpm rpm musl musl x86_64
+  get_all_rpm rpm musl musl i586
+  get_all_rpm rpm musl musl i686
+}
+
+categories[cntr_category]="centos"
+requirements["centos"]="requirements_centos"
+cntr_category=$((cntr_category + 1))
+centos() {
+  get_from_filelistgz centos-glibc http://mirror.centos.org/centos/ glibc i686
+  get_from_filelistgz centos-glibc http://mirror.centos.org/centos/ glibc x86_64
+}
+
+categories[cntr_category]="arch"
+requirements["arch"]="requirements_pkg"
+cntr_category=$((cntr_category + 1))
+arch() {
+  get_all_pkg arch-glibc https://archive.archlinux.org/packages/g/glibc/ libc
+  get_all_pkg arch-lib32-glibc https://archive.archlinux.org/packages/l/lib32-glibc/ libc
+  get_all_pkg arch-musl https://archive.archlinux.org/packages/m/musl/ musl
+}
+
+categories[cntr_category]="alpine"
+requirements["alpine"]="requirements_apk"
+cntr_category=$((cntr_category + 1))
+alpine() {
+  alpine_versions=(
+      latest-stable
+      edge
+      v3.0
+      v3.1
+      v3.2
+      v3.3
+      v3.4
+      v3.5
+      v3.6
+      v3.7
+      v3.8
+      v3.9
+      v3.10
+      v3.11
+      v3.12
+  )
+
+  for version in "${alpine_versions[@]}"; do
+    get_all_apk alpine-musl http://dl-cdn.alpinelinux.org/alpine/ "$version" main x86_64 musl
+    get_all_apk alpine-musl http://dl-cdn.alpinelinux.org/alpine/ "$version" main x86 musl
+  done
+}
+
+categories[cntr_category]="kali"
+requirements["kali"]="requirements_debian"
+cntr_category=$((cntr_category + 1))
+kali() {
+  get_all_debian kali-glibc https://http.kali.org/pool/main/g/glibc/ libc6
+  get_all_debian kali-musl https://http.kali.org/pool/main/m/musl/ musl
+}
+categories[cntr_category]="parrotsec"
+requirements["parrotsec"]="requirements_debian"
+cntr_category=$((cntr_category + 1))
+parrotsec() {
+  get_all_debian parrotsec-glibc https://download.parrot.sh/parrot/pool/main/g/glibc/ libc6
+  get_all_debian parrotsec-musl https://download.parrot.sh/parrot/pool/main/m/musl/ musl
+}
+categories[cntr_category]="launchpad"
+requirements["launchpad"]="requirements_launchpad"
+cntr_category=$((cntr_category + 1))
+launchpad() {
+  get_all_launchpad launchpad-ubuntu-glibc ubuntu libc6 amd64
+  get_all_launchpad launchpad-ubuntu-glibc ubuntu libc6 i386
+}
+
+help() {
+  exec 1>&2
+  echo "Please specify libc categories to download:"
+  for category in "${categories[@]}" ; do
+    echo -e "\t* $category"
+  done
+  echo ""
+  echo "You may also specify 'all' to download all categories available."
+  echo ""
+  echo "Example:"
+  echo ""
+  echo "$ ./get ubuntu rpm arch"
+  echo "$ ./get all"
+  exit 1
+}
+
+if [[ "$#" -eq 0 ]] ; then
+  help
+fi
+if [[ " $@ " == *" all "* ]] ; then
+  set -- "${categories[@]}"
+fi
+
+# Verify arguments, requirements, and display a recap
+requirements_general || die "General requirements are not met. Please, refer to README.md for installation instructions"
+echo "Will download or update for:"
+for category in "$@" ; do
+  if [[ ! " ${categories[@]} " == *" ${category} "* ]] ; then
+    die "Invalid category '$category'"
+  fi
+  ${requirements[$category]} || die "Requirements for download or update '$category' are not met. Please, refer to README.md for installation instructions"
+  echo -e "\t* $category ; Requirements are met"
+done
+
+
+# Let's start :)
+for category in "$@" ; do
+  echo "Downloading/updating $category"
+  $category
+done
